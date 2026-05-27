@@ -1,10 +1,149 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
-  <title>My Website</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Share 🐾 寵物交流平台 - 首頁</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
-<body>
-  <h1>我的網站</h1>
-  <p>網站施工中，之後會更新完整內容。</p>
+<body class="light-mode">
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <!-- Logo -->
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">🐾</span>
+        <span class="logo-text">Pet Share</span>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="nav-link" id="nav-home"><i class="fa-solid fa-house"></i> 首頁</a></li>
+        <li><a href="feed.html" class="nav-link" id="nav-feed"><i class="fa-solid fa-paw"></i> 分享區</a></li>
+        <li><a href="create.html" class="nav-link" id="nav-create"><i class="fa-solid fa-plus-circle"></i> 新增貼文</a></li>
+        <li id="navProfileLink" style="display:none"><a href="profile.html" class="nav-link" id="nav-profile"><i class="fa-solid fa-user"></i> 個人頁</a></li>
+      </ul>
+
+      <!-- Right side: theme toggle + auth -->
+      <div class="nav-right">
+        <!-- Dark mode toggle -->
+        <button class="theme-toggle" id="themeToggle" title="切換深色模式">
+          <i class="fa-solid fa-moon" id="themeIcon"></i>
+        </button>
+
+        <!-- Auth area (guest) -->
+        <div id="guestNav">
+          <a href="login.html" class="btn btn-outline"><i class="fa-solid fa-right-to-bracket"></i> 登入</a>
+        </div>
+
+        <!-- Auth area (logged in) -->
+        <div id="userNav" style="display:none" class="user-nav">
+          <div class="nav-avatar-wrap" id="navAvatarWrap">
+            <img src="" alt="avatar" class="nav-avatar" id="navAvatar" />
+            <span id="navUsername" class="nav-username"></span>
+          </div>
+          <button class="btn btn-outline btn-sm" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> 登出</button>
+        </div>
+      </div>
+
+      <!-- Hamburger -->
+      <button class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ========== PAGES WRAPPER ========== -->
+  <main class="main-content">
+
+    <!-- ===== PAGE: FEED (Home) ===== -->
+    <section class="page active" id="page-feed">
+      <div class="hero-banner">
+        <div class="hero-content">
+          <h1>歡迎來到 <span class="highlight">Pet Share</span> 🐾</h1>
+          <p>分享你的毛孩日常，和全世界的寵物愛好者一起交流！</p>
+          <div class="hero-buttons">
+            <a href="feed.html" class="btn btn-primary"><i class="fa-solid fa-paw"></i> 探索分享區</a>
+            <a href="create.html" class="btn btn-secondary"><i class="fa-solid fa-pen"></i> 發布貼文</a>
+          </div>
+        </div>
+        <div class="hero-art">
+          <div class="floating-emoji" style="--delay:0s">🐶</div>
+          <div class="floating-emoji" style="--delay:0.5s">🐱</div>
+          <div class="floating-emoji" style="--delay:1s">🐰</div>
+          <div class="floating-emoji" style="--delay:1.5s">🐹</div>
+          <div class="floating-emoji" style="--delay:0.8s">🐾</div>
+        </div>
+      </div>
+
+      <!-- Stats bar -->
+      <div class="stats-bar">
+        <div class="stat-item"><i class="fa-solid fa-users"></i><span id="statUsers">0</span> 位毛孩主人</div>
+        <div class="stat-item"><i class="fa-solid fa-newspaper"></i><span id="statPosts">0</span> 篇貼文</div>
+        <div class="stat-item"><i class="fa-solid fa-heart"></i><span id="statLikes">0</span> 個愛心</div>
+        <div class="stat-item"><i class="fa-solid fa-comment"></i><span id="statComments">0</span> 則留言</div>
+      </div>
+
+      <!-- Recent posts preview -->
+      <div class="section-header">
+        <h2>🔥 最新貼文</h2>
+        <a href="feed.html" class="see-all">查看全部 →</a>
+      </div>
+      <div class="posts-grid" id="feedPostsGrid"></div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script src="storage.js"></script>
+  <script src="ui.js"></script>
+  <script src="post.js"></script>
+  <script>
+    // 更新首頁計數器的數值
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const uCount = Storage.users.count();
+        const pCount = Storage.posts.count();
+        const lCount = Storage.likes.count();
+        const cCount = Storage.comments.count();
+
+        const targets = {
+          statUsers: uCount,
+          statPosts: pCount,
+          statLikes: lCount,
+          statComments: cCount,
+        };
+
+        for (const [id, value] of Object.entries(targets)) {
+          const el = document.getElementById(id);
+          if (!el) continue;
+          if (typeof animateCounter === 'function') {
+            animateCounter(el, parseInt(el.textContent) || 0, value, 600);
+          } else {
+            el.textContent = value;
+          }
+        }
+      }, 100);
+    });
+
+    function animateCounter(el, from, to, duration) {
+      if (from === to) { el.textContent = to; return; }
+      const start = performance.now();
+      const step = (now) => {
+        const progress = Math.min((now - start) / duration, 1);
+        el.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - progress, 3)));
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+  </script>
 </body>
 </html>

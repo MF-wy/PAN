@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Share 🐾 寵物交流平台 - 註冊</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body class="light-mode">
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <!-- Logo -->
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">🐾</span>
+        <span class="logo-text">Pet Share</span>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="nav-link" id="nav-home"><i class="fa-solid fa-house"></i> 首頁</a></li>
+        <li><a href="feed.html" class="nav-link" id="nav-feed"><i class="fa-solid fa-paw"></i> 分享區</a></li>
+        <li><a href="create.html" class="nav-link" id="nav-create"><i class="fa-solid fa-plus-circle"></i> 新增貼文</a></li>
+        <li id="navProfileLink" style="display:none"><a href="profile.html" class="nav-link" id="nav-profile"><i class="fa-solid fa-user"></i> 個人頁</a></li>
+      </ul>
+
+      <!-- Right side: theme toggle + auth -->
+      <div class="nav-right">
+        <!-- Dark mode toggle -->
+        <button class="theme-toggle" id="themeToggle" title="切換深色模式">
+          <i class="fa-solid fa-moon" id="themeIcon"></i>
+        </button>
+
+        <!-- Auth area (guest) -->
+        <div id="guestNav">
+          <a href="login.html" class="btn btn-outline"><i class="fa-solid fa-right-to-bracket"></i> 登入</a>
+        </div>
+
+        <!-- Auth area (logged in) -->
+        <div id="userNav" style="display:none" class="user-nav">
+          <div class="nav-avatar-wrap" id="navAvatarWrap">
+            <img src="" alt="avatar" class="nav-avatar" id="navAvatar" />
+            <span id="navUsername" class="nav-username"></span>
+          </div>
+          <button class="btn btn-outline btn-sm" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> 登出</button>
+        </div>
+      </div>
+
+      <!-- Hamburger -->
+      <button class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ========== PAGES WRAPPER ========== -->
+  <main class="main-content">
+
+    <!-- ===== PAGE: REGISTER ===== -->
+    <section class="page active" id="page-register">
+      <div class="auth-container">
+        <!-- Tabs -->
+        <div class="auth-tabs">
+          <a href="login.html" class="auth-tab" id="loginTab">登入</a>
+          <a href="register.html" class="auth-tab active" id="registerTab">註冊</a>
+        </div>
+
+        <!-- REGISTER FORM -->
+        <div class="auth-form" id="registerForm">
+          <div class="auth-logo">🐾</div>
+          <h2>加入我們！</h2>
+          <p class="auth-sub">建立帳號，分享你的毛孩</p>
+
+          <!-- Avatar upload -->
+          <div class="avatar-upload-wrap">
+            <div class="avatar-upload-circle" id="avatarCircle" onclick="document.getElementById('regAvatar').click()">
+              <img src="" id="regAvatarPreview" style="display:none" />
+              <span id="avatarPlaceholder"><i class="fa-solid fa-camera"></i><br/><small>上傳頭貼</small></span>
+            </div>
+            <input type="file" id="regAvatar" accept="image/*" style="display:none" />
+          </div>
+
+          <div class="form-group">
+            <label><i class="fa-solid fa-id-card"></i> 使用者 ID</label>
+            <input type="text" id="regId" placeholder="英數字，不可重複" />
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-user"></i> 使用者名稱</label>
+            <input type="text" id="regName" placeholder="你的暱稱" />
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-lock"></i> 密碼</label>
+            <div class="pw-wrap">
+              <input type="password" id="regPw" placeholder="至少 6 個字元" />
+              <button type="button" class="pw-toggle" onclick="Auth.togglePw('regPw', this)"><i class="fa-solid fa-eye"></i></button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-lock"></i> 確認密碼</label>
+            <div class="pw-wrap">
+              <input type="password" id="regPw2" placeholder="再輸入一次密碼" />
+              <button type="button" class="pw-toggle" onclick="Auth.togglePw('regPw2', this)"><i class="fa-solid fa-eye"></i></button>
+            </div>
+          </div>
+          <div class="form-msg error" id="registerError" style="display:none"></div>
+          <div class="form-msg success" id="registerSuccess" style="display:none"></div>
+          <button class="btn btn-primary btn-full" id="registerSubmitBtn">
+            <i class="fa-solid fa-user-plus"></i> 立即註冊
+          </button>
+          <p class="switch-auth">已有帳號？<a href="login.html">前往登入</a></p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script src="storage.js"></script>
+  <script src="ui.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 綁定註冊頭貼選擇
+      const regAvatar = document.getElementById('regAvatar');
+      if (regAvatar) {
+        regAvatar.addEventListener('change', Auth.previewRegAvatar);
+      }
+
+      // 綁定註冊提交按鈕
+      const regBtn = document.getElementById('registerSubmitBtn');
+      if (regBtn) {
+        regBtn.addEventListener('click', Auth.register);
+      }
+    });
+  </script>
+</body>
+</html>

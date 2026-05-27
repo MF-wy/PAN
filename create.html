@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Share 🐾 寵物交流平台 - 新增貼文</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body class="light-mode">
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <!-- Logo -->
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">🐾</span>
+        <span class="logo-text">Pet Share</span>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="nav-link" id="nav-home"><i class="fa-solid fa-house"></i> 首頁</a></li>
+        <li><a href="feed.html" class="nav-link" id="nav-feed"><i class="fa-solid fa-paw"></i> 分享區</a></li>
+        <li><a href="create.html" class="nav-link" id="nav-create"><i class="fa-solid fa-plus-circle"></i> 新增貼文</a></li>
+        <li id="navProfileLink" style="display:none"><a href="profile.html" class="nav-link" id="nav-profile"><i class="fa-solid fa-user"></i> 個人頁</a></li>
+      </ul>
+
+      <!-- Right side: theme toggle + auth -->
+      <div class="nav-right">
+        <!-- Dark mode toggle -->
+        <button class="theme-toggle" id="themeToggle" title="切換深色模式">
+          <i class="fa-solid fa-moon" id="themeIcon"></i>
+        </button>
+
+        <!-- Auth area (guest) -->
+        <div id="guestNav">
+          <a href="login.html" class="btn btn-outline"><i class="fa-solid fa-right-to-bracket"></i> 登入</a>
+        </div>
+
+        <!-- Auth area (logged in) -->
+        <div id="userNav" style="display:none" class="user-nav">
+          <div class="nav-avatar-wrap" id="navAvatarWrap">
+            <img src="" alt="avatar" class="nav-avatar" id="navAvatar" />
+            <span id="navUsername" class="nav-username"></span>
+          </div>
+          <button class="btn btn-outline btn-sm" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> 登出</button>
+        </div>
+      </div>
+
+      <!-- Hamburger -->
+      <button class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ========== PAGES WRAPPER ========== -->
+  <main class="main-content">
+
+    <!-- ===== PAGE: POST (New Post) ===== -->
+    <section class="page active" id="page-post">
+      <div class="page-header">
+        <h2>✏️ 新增貼文</h2>
+        <p>分享你毛孩的可愛瞬間</p>
+      </div>
+
+      <div class="post-form-card" id="postFormCard">
+        <!-- Author info -->
+        <div class="post-author-info" id="postAuthorInfo">
+          <img src="" alt="avatar" class="post-avatar" id="postFormAvatar" />
+          <div>
+            <span class="post-author-name" id="postFormName">請先登入</span>
+            <span class="post-author-id" id="postFormId"></span>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <div class="form-group">
+          <label for="postTitle"><i class="fa-solid fa-tag"></i> 貼文主題</label>
+          <input type="text" id="postTitle" placeholder="例：我家喵喵今天超可愛！" maxlength="60" />
+          <small class="char-count" id="titleCount">0 / 60</small>
+        </div>
+
+        <div class="form-group">
+          <label for="postContent"><i class="fa-solid fa-align-left"></i> 貼文內容</label>
+          <textarea id="postContent" rows="5" placeholder="跟大家分享你的毛孩故事吧！" maxlength="500"></textarea>
+          <small class="char-count" id="contentCount">0 / 500</small>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-image"></i> 上傳圖片（選填）</label>
+          <div class="image-upload-area" id="imageUploadArea" onclick="document.getElementById('postImage').click()">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <p>點擊或拖曳上傳圖片</p>
+            <small>支援 JPG、PNG、GIF</small>
+            <input type="file" id="postImage" accept="image/*" style="display:none" onchange="previewPostImage(event)" />
+          </div>
+          <div id="postImagePreview" class="image-preview-wrap" style="display:none">
+            <img id="postImagePreviewImg" src="" alt="preview" />
+            <button class="remove-img-btn" onclick="removePostImage()"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-outline" id="clearPostBtn"><i class="fa-solid fa-rotate-left"></i> 清除</button>
+          <button class="btn btn-primary" id="submitPostBtn"><i class="fa-solid fa-paper-plane"></i> 發布貼文</button>
+        </div>
+
+        <!-- Not logged in notice -->
+        <div class="login-notice" id="postLoginNotice" style="display:none">
+          <i class="fa-solid fa-lock"></i>
+          <p>請先登入才能發文</p>
+          <a href="login.html" class="btn btn-primary">前往登入</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Success Overlay -->
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-content">
+      <div class="success-anim">🎉</div>
+      <h3 id="successTitle">發布成功！</h3>
+      <p id="successMsg">你的貼文已成功發布</p>
+    </div>
+  </div>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script src="storage.js"></script>
+  <script src="ui.js"></script>
+  <script src="post.js"></script>
+  <script>
+    // 清除按鈕的點擊監聽綁定
+    document.addEventListener('DOMContentLoaded', () => {
+      const clearBtn = document.getElementById('clearPostBtn');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', clearPostForm);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Share 🐾 寵物交流平台 - 雙重認證</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* 驗證碼特別樣式 */
+    .verify-input {
+      text-align: center;
+      font-size: 1.5rem !important;
+      letter-spacing: 0.5rem;
+      padding-left: 1.2rem !important;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body class="light-mode">
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <!-- Logo -->
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">🐾</span>
+        <span class="logo-text">Pet Share</span>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="nav-link" id="nav-home"><i class="fa-solid fa-house"></i> 首頁</a></li>
+        <li><a href="feed.html" class="nav-link" id="nav-feed"><i class="fa-solid fa-paw"></i> 分享區</a></li>
+        <li><a href="create.html" class="nav-link" id="nav-create"><i class="fa-solid fa-plus-circle"></i> 新增貼文</a></li>
+        <li id="navProfileLink" style="display:none"><a href="profile.html" class="nav-link" id="nav-profile"><i class="fa-solid fa-user"></i> 個人頁</a></li>
+      </ul>
+
+      <!-- Right side: theme toggle + auth -->
+      <div class="nav-right">
+        <!-- Dark mode toggle -->
+        <button class="theme-toggle" id="themeToggle" title="切換深色模式">
+          <i class="fa-solid fa-moon" id="themeIcon"></i>
+        </button>
+
+        <!-- Auth area (guest) -->
+        <div id="guestNav">
+          <a href="login.html" class="btn btn-outline"><i class="fa-solid fa-right-to-bracket"></i> 登入</a>
+        </div>
+
+        <!-- Auth area (logged in) -->
+        <div id="userNav" style="display:none" class="user-nav">
+          <div class="nav-avatar-wrap" id="navAvatarWrap">
+            <img src="" alt="avatar" class="nav-avatar" id="navAvatar" />
+            <span id="navUsername" class="nav-username"></span>
+          </div>
+          <button class="btn btn-outline btn-sm" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> 登出</button>
+        </div>
+      </div>
+
+      <!-- Hamburger -->
+      <button class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ========== PAGES WRAPPER ========== -->
+  <main class="main-content">
+
+    <!-- ===== PAGE: VERIFY ===== -->
+    <section class="page active" id="page-verify">
+      <div class="auth-container">
+        <div class="auth-form" id="verifyForm">
+          <div class="auth-logo">🔒</div>
+          <h2>雙重認證 2FA</h2>
+          <p class="auth-sub">驗證碼已寄送至您的 Email：<br/><strong id="userEmail" style="color:var(--text-dark);"></strong></p>
+
+          <div class="form-group">
+            <label style="justify-content: center;"><i class="fa-solid fa-key"></i> 請輸入 6 位數驗證碼</label>
+            <input type="text" id="verifyCode" class="verify-input" placeholder="000000" maxlength="6" />
+          </div>
+
+          <!-- Captcha block -->
+          <div class="captcha-container" id="captchaContainer" style="margin-top: 1.25rem; margin-bottom: 1.25rem; padding: 1.25rem; border: 1.5px solid var(--border); border-radius: var(--radius-lg); background: var(--card-bg);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <h4 style="font-size: 0.9rem; color: var(--text-dark); margin: 0;"><i class="fa-solid fa-circle-check"></i> 圖片驗證：<span id="captchaPrompt" style="color: var(--milk-tea); font-weight: 800;">請選取...</span></h4>
+              <button type="button" id="refreshCaptchaBtn" class="btn btn-sm" style="padding: 0.25rem 0.5rem; color: var(--text-light); font-size: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-sm);" title="重整題目">
+                <i class="fa-solid fa-arrows-rotate"></i> 換一題
+              </button>
+            </div>
+            <div class="captcha-grid" id="captchaGrid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 0.75rem;">
+              <!-- 9 items dynamically generated -->
+            </div>
+            <small style="color: var(--text-light); display: block; text-align: center; font-size: 0.72rem;">請選取所有符合題目的圖片，以完成安全驗證</small>
+          </div>
+          
+          <div class="form-msg error" id="verifyError" style="display:none"></div>
+          
+          <button class="btn btn-primary btn-full" id="verifySubmitBtn" style="margin-bottom: 0.5rem;">
+            <i class="fa-solid fa-shield-check"></i> 驗證並登入
+          </button>
+          
+          <button class="btn btn-outline btn-full" id="resendCodeBtn">
+            <i class="fa-solid fa-rotate"></i> 重新發送驗證碼
+          </button>
+
+          <!-- Developer helper mockup -->
+          <div class="dev-mock-card" style="margin-top: 1.5rem; padding: 1rem; border: 1.5px dashed var(--milk-light); border-radius: var(--radius-md); background: rgba(212, 165, 116, 0.05); text-align: center;">
+            <h4 style="color: var(--warm-brown); font-size: 0.85rem; margin-bottom: 0.3rem;"><i class="fa-solid fa-code"></i> 【開發者測試模擬信箱】</h4>
+            <p style="font-size: 0.8rem; color: var(--text-mid);">已發送驗證信！您的 6 位數驗證碼為：<strong id="devCode" style="font-size: 1.1rem; color: var(--milk-tea); letter-spacing: 2px;">XXXXXX</strong></p>
+          </div>
+          
+          <p class="switch-auth"><a href="login.html">返回登入</a></p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Success Overlay -->
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-content">
+      <div class="success-anim">🎉</div>
+      <h3 id="successTitle">驗證成功！</h3>
+      <p id="successMsg">即將登入社群</p>
+    </div>
+  </div>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script src="storage.js"></script>
+  <script src="ui.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const verifyData = Storage.verificationCode.get();
+      
+      // 若無 pending 驗證資料，導回登入頁
+      if (!verifyData) {
+        UI.showToast('無進行中驗證程序，請先登入。', 'error');
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 1000);
+        return;
+      }
+
+      // 填入模擬 Email 與開發者測試碼
+      const emailEl = document.getElementById('userEmail');
+      const devCodeEl = document.getElementById('devCode');
+      
+      if (emailEl) emailEl.textContent = verifyData.userId + '@petshare.com';
+      if (devCodeEl) devCodeEl.textContent = verifyData.code;
+
+      // 初始化圖片驗證
+      if (typeof Auth !== 'undefined' && typeof Auth.generateCaptcha === 'function') {
+        Auth.generateCaptcha();
+      }
+
+      // 綁定按鈕
+      const submitBtn = document.getElementById('verifySubmitBtn');
+      const resendBtn = document.getElementById('resendCodeBtn');
+      const refreshBtn = document.getElementById('refreshCaptchaBtn');
+      
+      if (submitBtn) submitBtn.addEventListener('click', Auth.verify);
+      if (resendBtn) resendBtn.addEventListener('click', Auth.resendCode);
+      if (refreshBtn) refreshBtn.addEventListener('click', () => {
+        if (typeof Auth !== 'undefined' && typeof Auth.generateCaptcha === 'function') {
+          Auth.generateCaptcha();
+        }
+      });
+
+      // Enter 鍵送出
+      document.getElementById('verifyCode')?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') Auth.verify();
+      });
+    });
+  </script>
+</body>
+</html>

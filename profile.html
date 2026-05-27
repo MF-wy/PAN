@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Share 🐾 寵物交流平台 - 個人頁</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body class="light-mode">
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <!-- Logo -->
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">🐾</span>
+        <span class="logo-text">Pet Share</span>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="nav-link" id="nav-home"><i class="fa-solid fa-house"></i> 首頁</a></li>
+        <li><a href="feed.html" class="nav-link" id="nav-feed"><i class="fa-solid fa-paw"></i> 分享區</a></li>
+        <li><a href="create.html" class="nav-link" id="nav-create"><i class="fa-solid fa-plus-circle"></i> 新增貼文</a></li>
+        <li id="navProfileLink" style="display:none"><a href="profile.html" class="nav-link" id="nav-profile"><i class="fa-solid fa-user"></i> 個人頁</a></li>
+      </ul>
+
+      <!-- Right side: theme toggle + auth -->
+      <div class="nav-right">
+        <!-- Dark mode toggle -->
+        <button class="theme-toggle" id="themeToggle" title="切換深色模式">
+          <i class="fa-solid fa-moon" id="themeIcon"></i>
+        </button>
+
+        <!-- Auth area (guest) -->
+        <div id="guestNav">
+          <a href="login.html" class="btn btn-outline"><i class="fa-solid fa-right-to-bracket"></i> 登入</a>
+        </div>
+
+        <!-- Auth area (logged in) -->
+        <div id="userNav" style="display:none" class="user-nav">
+          <div class="nav-avatar-wrap" id="navAvatarWrap">
+            <img src="" alt="avatar" class="nav-avatar" id="navAvatar" />
+            <span id="navUsername" class="nav-username"></span>
+          </div>
+          <button class="btn btn-outline btn-sm" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> 登出</button>
+        </div>
+      </div>
+
+      <!-- Hamburger -->
+      <button class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ========== PAGES WRAPPER ========== -->
+  <main class="main-content">
+
+    <!-- ===== PAGE: PROFILE ===== -->
+    <section class="page active" id="page-profile">
+      <div class="profile-header-card">
+        <div class="profile-cover"></div>
+        <div class="profile-info-wrap">
+          <div class="profile-avatar-wrap">
+            <img src="" alt="avatar" class="profile-avatar" id="profileAvatar" />
+            <button class="edit-avatar-btn" onclick="document.getElementById('editAvatarInput').click()" title="更換頭貼">
+              <i class="fa-solid fa-camera"></i>
+            </button>
+            <input type="file" id="editAvatarInput" accept="image/*" style="display:none" />
+          </div>
+          <div class="profile-meta">
+            <h2 id="profileName">使用者名稱</h2>
+            <p class="profile-id" id="profileId">@user_id</p>
+            <p class="profile-bio" id="profileBio">這個人很懶，什麼都沒有留下...</p>
+            
+            <button class="btn btn-outline btn-sm" id="editProfileBtn" style="display:none;"><i class="fa-solid fa-pen"></i> 編輯資料</button>
+            <a href="feed.html" class="btn btn-outline btn-sm" id="returnToFeedBtn" style="display:none;"><i class="fa-solid fa-arrow-left"></i> 返回分享區</a>
+          </div>
+          <div class="profile-stats">
+            <div class="pstat"><span id="profilePostCount">0</span><small>貼文</small></div>
+            <div class="pstat"><span id="profileLikeCount">0</span><small>獲讚</small></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-header" style="margin-top:2rem">
+        <h3 id="profilePostsHeader">📝 貼文列表</h3>
+      </div>
+      <div class="posts-list" id="myPostsList">
+        <div class="empty-state">
+          <div class="empty-icon">📝</div>
+          <p>還沒有發過貼文</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========== MODALS ========== -->
+
+  <!-- Edit Profile Modal -->
+  <div class="modal-overlay" id="editProfileModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-pen"></i> 編輯個人資料</h3>
+        <button class="modal-close" onclick="UI.closeModal('editProfileModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>使用者名稱</label>
+          <input type="text" id="editName" placeholder="你的暱稱" />
+        </div>
+        <div class="form-group">
+          <label>個人簡介</label>
+          <textarea id="editBio" rows="3" placeholder="介紹你和你的毛孩..." maxlength="100"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="UI.closeModal('editProfileModal')">取消</button>
+        <button class="btn btn-primary" id="saveProfileBtn">儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script src="storage.js"></script>
+  <script src="ui.js"></script>
+  <script src="post.js"></script>
+  <script src="profile.js"></script>
+</body>
+</html>
